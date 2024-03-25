@@ -1,0 +1,32 @@
+<button class="btn btn-secondary mt-3 mx-5" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample"
+  aria-controls="offcanvasExample">
+  <span>Menu <i class="fa-solid fa-bars"></i></span>
+</button>
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasExampleLabel">Menu</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div class="list-group" style="box-shadow: none !important;">
+      <a href="{% url 'dash:index' %}" class="list-group-item list-group-item-action"><i class="fa-solid fa-house"></i>
+        Dashboard</a>
+      <a href="{% url 'user:index' %}" class="list-group-item list-group-item-action"><i class="fa-solid fa-users"></i>
+        Users</a>
+      <div class="dropdown">
+        <a class="list-group-item list-group-item-action dropdown-toggle" href="#" role="button"
+          data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="fa-solid fa-boxes-stacked"></i> Inventary
+        </a>
+        <ul class="dropdown-menu"
+          style="border-color: transparent !important;box-shadow: none !important; padding-right: 1em !important; padding-left: 1em !important;">
+          <li><a class="dropdown-item" href="{% url 'product:index' %}">Product</a></li>
+          <li><a class="dropdown-item" href="{% url 'category:index' %}">Category</a></li>
+          <li><a class="dropdown-item" href="{% url 'subcategory:index' %}">Subcategory</a></li>
+        </ul>
+      </div>
+      <a href="#" class="list-group-item list-group-item-action"><i class="fa-solid fa-clipboard-list"></i> Orders</a>
+    </div>
+  </div>
+</div>
