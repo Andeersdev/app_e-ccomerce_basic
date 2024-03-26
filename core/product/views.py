@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .models import Product
 from core.subcategory.models import Subcategory
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .forms import ProductForm
 from django.urls import reverse_lazy
 from django.http import JsonResponse
@@ -11,6 +11,18 @@ class ProductListView(ListView):
     model = Product
     context_object_name = 'products'
     template_name = 'product/list.html'
+
+
+class ProductDetailView(DetailView):
+    model = Product
+    context_object_name = 'product'
+    template_name = 'product/detail.html'
+
+    def get_object(self, queryset=None):
+        # Obtén el nombre del producto de la URL
+        product_name = self.kwargs.get('name')
+        # Busca el producto por su nombre
+        return Product.objects.get(name=product_name)
 
 
 class ProductCreateView(CreateView):

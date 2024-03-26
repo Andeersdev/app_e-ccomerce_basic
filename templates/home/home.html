@@ -24,7 +24,7 @@
                         <div class="card-body">
                             <h5 class="card-title">{{product.name}}</h5>
                             <p class="card-text">{{product.description}}</p>
-                            <a class="btn btn-outline-primary">View Product</a>
+                            <a class="btn btn-outline-primary" href="{% url 'product:detail' product.name %}">View Product</a>
                         </div>
                     </div>
                 </div>
