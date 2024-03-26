@@ -1,0 +1,70 @@
+{% extends 'layouts/main.html' %}
+{% block title %}Product Detail{% endblock title %}
+{% block header %}
+{% include 'layouts/components/menu.html' %}
+{% endblock header %}
+{% block content %}
+<div class="card mb-3 mt-4">
+    <div class="row g-0">
+        <div class="col-md-6">
+            <img src="{{product.image.url}}" class="img-fluid rounded-start" alt="...">
+        </div>
+        <div class="col-md-6">
+            <div class="card-body mx-5 mt-5">
+                <h5 class="card-title h2">{{product.name}}</h5>
+                <h4>$ {{product.price}}</h4>
+                <p class="card-text">{{product.description}}</p>
+                <div class="mb-3">
+                    <h6>Quantity:</h6>
+                    <select id="quantity" class="form-control w-25">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary"
+                    onclick="addCart({{product.id}},'{{product.name}}', '{{product.image}}', {{product.price}})">Add
+                    Cart</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script>
+    function addCart(productId, productName, productImage, productPrice) {
+        const quantity = document.querySelector('#quantity').value
+        const productList = JSON.parse(localStorage.getItem('products')) || []
+        let productExist = false
+        let total = quantity * productPrice
+        productList.forEach(product => {
+            if (product.id === productId) {
+                productExist = true
+                return
+            }
+        })
+        if (!productExist) {
+            product = {
+                'id': productId,
+                'image': productImage,
+                'name': productName,
+                'quantity': quantity,
+                'price': productPrice,
+                'total': total
+            }
+            productList.push(product)
+            localStorage.setItem('products', JSON.stringify(productList))
+            window.location.reload()
+        } else {
+            alert('Product already exists!')
+        }
+    }
+</script>
+{% endblock script %}

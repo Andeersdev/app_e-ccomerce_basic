@@ -1,0 +1,70 @@
+{% extends 'layouts/main.html' %}
+{% block title %}Cart{% endblock title %}
+{% block header %}
+{% include 'layouts/components/menu.html' %}
+{% endblock header %}
+{% block content %}
+<div class="card mt-5">
+    <div class="row">
+        <div class="col-xl-9">
+            <div class="m-5">
+                <h4 class="">Shopping Cart</h4>
+                <hr>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <th>Product Detail</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                            <th>Action</th>
+                        </thead>
+                        <tbody id="tbody">
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 bg-light">
+            <div class="m-5">
+                <h4 class="">Order Summary</h4>
+                <hr>
+                <div class="mt-5">
+                    <p>Items:</p>
+                    <p>Sub Total:</p>
+                    <p>Iva:</p>
+                    <hr>
+                    <p class="fw-bold">Total:</p>
+                    <div class="d-grid">
+                        <button class="btn btn-primary">Checkout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+{% block script %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const products = JSON.parse(localStorage.getItem('products')) || []
+        const tbody = document.querySelector('#tbody')
+        let data = ''
+        if (products.length > 0) {
+            products.forEach(product => {
+                data += `
+                <tr>
+                    <td><img src="/media/${product.image}" style="width:50px" /><span class="mx-2">${product.name}</span></td>
+                    <td>${product.quantity}</td>
+                    <td>${product.price}</td>
+                    <td>${product.total}</td>
+                    <td><button class="btn btn-secondary"><i class="fa-solid fa-x fa-xs"></i></button></td>
+                </tr>
+                `
+            });
+            tbody.innerHTML = data
+        }
+    })
+</script>
+{% endblock script %}
