@@ -29,7 +29,7 @@
                         <option value="10">10</option>
                     </select>
                 </div>
-                <button class="btn btn-primary"
+                <button class="btn btn-primary" id="btnAddCart" disabled
                     onclick="addCart({{product.id}},'{{product.name}}', '{{product.image}}', {{product.price}})">Add
                     Cart</button>
             </div>
@@ -39,6 +39,9 @@
 {% endblock %}
 {% block script %}
 <script>
+    {% if user.is_authenticated %}
+    document.querySelector('#btnAddCart').disabled = false
+    {% endif %}
     function addCart(productId, productName, productImage, productPrice) {
         const quantity = document.querySelector('#quantity').value
         const productList = JSON.parse(localStorage.getItem('products')) || []

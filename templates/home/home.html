@@ -8,13 +8,39 @@
     <div class="row">
         <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3 my-5">
             <h5>Category</h5>
-            <div class="list-group">
-                {% for category in categories %}
-                <a href="#" class="list-group-item list-group-item-action">{{category.name}}</a>
-                {% endfor %}
+            <div class="accordion" id="accordionExample">
+                <div class="accordion-item">
+                    {% for category in categories %}
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="true"
+                            aria-controls="collapse{{ forloop.counter }}">
+                            {{category.name}}
+                        </button>
+                    </h2>
+                    <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse"
+                        data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            {% for subcategory in category.subcategory_set.all %}
+                            <a href="?filter={{subcategory.name}}"
+                                class="list-group-item list-group-item-action mb-2">{{subcategory.name}}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
             </div>
         </div>
         <div class="col-sm-12 col-md-6 col-lg-9 col-xl-9">
+            <div class="mx-auto m-3">
+                <form method="get">
+                    <div class="input-group mb-3">
+                        <input class="form-control" placeholder="Enter product" name="search"
+                            aria-describedby="button-addon2" required>
+                        <button class="btn btn-outline-primary" id="button-addon2"><i class="fa-solid fa-magnifying-glass"></i></button>
+                    </div>
+                </form>
+            </div>
             <div class="row">
                 {% for product in products %}
                 <div class="col-sm-12 col-md-12 col-lg-6 col-xl-4">
@@ -23,8 +49,9 @@
                             style="max-height: 250px;">
                         <div class="card-body">
                             <h5 class="card-title">{{product.name}}</h5>
-                            <p class="card-text">{{product.description}}</p>
-                            <a class="btn btn-outline-primary" href="{% url 'product:detail' product.name %}">View Product</a>
+                            <p class="card-text">{{product.description | truncatechars:50}}</p>
+                            <a class="btn btn-outline-primary" href="{% url 'product:detail' product.id %}">View
+                                Product</a>
                         </div>
                     </div>
                 </div>

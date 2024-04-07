@@ -31,13 +31,16 @@
                 <h4 class="">Order Summary</h4>
                 <hr>
                 <div class="mt-5">
-                    <p>Items:</p>
-                    <p>Sub Total:</p>
-                    <p>Iva:</p>
+                    <p>Items: <span id="items"></span></p>
+                    <p>Sub Total: <span id="subtotal"></span></p>
+                    <p>Iva: <span id="iva"></span></p>
                     <hr>
-                    <p class="fw-bold">Total:</p>
+                    <p class="fw-bold">Total: <span id="total"></span></p>
                     <div class="d-grid">
-                        <button class="btn btn-primary">Checkout</button>
+                        <button class="btn btn-success mb-2" id="btnCheckout"
+                            onclick="createOrder('{% url 'order:create' %}',2)" disabled>Pay Now</button>
+                        <button class="btn btn-primary" onclick="createOrder('{% url 'order:create' %}')">Create
+                            Order</button>
                     </div>
                 </div>
             </div>
@@ -51,7 +54,11 @@
         const products = JSON.parse(localStorage.getItem('products')) || []
         const tbody = document.querySelector('#tbody')
         let data = ''
+        let subtotal = 0
+        let iva = 0
+        let total = 0
         if (products.length > 0) {
+            document.querySelector('#items').innerHTML = products.length
             products.forEach(product => {
                 data += `
                 <tr>
@@ -59,12 +66,76 @@
                     <td>${product.quantity}</td>
                     <td>${product.price}</td>
                     <td>${product.total}</td>
-                    <td><button class="btn btn-secondary"><i class="fa-solid fa-x fa-xs"></i></button></td>
+                    <td><button class="btn btn-secondary" onclick="deleteItemCart(${product.id})"><i class="fa-solid fa-x fa-xs"></i></button></td>
                 </tr>
                 `
+                subtotal += product.total
+                iva = subtotal * 0.12
+                total = subtotal + iva
             });
             tbody.innerHTML = data
+            document.querySelector('#subtotal').innerHTML = subtotal
+            document.querySelector('#iva').innerHTML = iva.toFixed(2)
+            document.querySelector('#total').innerHTML = total.toFixed(2)
+        } else {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="text-center">Cart is empty! </td>
+                </tr>
+            `
         }
+
+        {% if user.is_authenticated %}
+        document.querySelector('#btnCheckout').disabled = false
+        {% endif %}
     })
+
+    function deleteItemCart(itemId) {
+        if (itemId) {
+            console.log(itemId);
+            const products = JSON.parse(localStorage.getItem('products')) || []
+            const productsUpdate = products.filter(product => product.id !== itemId)
+            console.log(productsUpdate);
+            localStorage.setItem('products', JSON.stringify(productsUpdate))
+            window.location.reload()
+        }
+    }
+
+    async function createOrder(url, option = 1) {
+        const products = JSON.parse(localStorage.getItem('products')) || []
+        if (products.length > 0) {
+            try {
+                if (option !== 1) option = 2
+
+                const response = await axios.post(url, { products: products, option:option }, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                if (response.status === 200) {
+                    console.log(response.data);
+                    const paypal_capture = response.data.links[1]
+                    window.location.href = paypal_capture.href
+                }
+
+            } catch (error) {
+                console.log(error);
+            }
+        } else {
+            console.log('Cart is empty!');
+        }
+    }
+
+    async function viewOrder(url) {
+        try {
+            orderId = '7TX79624RB190530L'
+            const response = await axios.post(url, { orderId })
+            if (response.status === 200) {
+                console.log(response.data);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
 </script>
 {% endblock script %}

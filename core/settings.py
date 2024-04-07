@@ -124,8 +124,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
-    BASE_DIR / 'static',
-    '/var/www/static/'
+    BASE_DIR / 'static'
 ]
 
 MEDIA_URL = 'media/'
@@ -134,6 +133,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 AUTH_USER_MODEL = 'user.User'
 
 LOGIN_REDIRECT_URL = 'dash:index'
+LOGOUT_REDIRECT_URL = 'home'
+
+LOGIN_URL = 'login'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 

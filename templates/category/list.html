@@ -7,7 +7,7 @@
     <div class="row justify-content-between align-items-center">
       <div class="col-auto">
         <div class="card-header-action">
-          <button class="btn btn-primary btn-sm" onclick="open_modal()">New Category</button>
+          <button class="btn btn-primary" onclick="open_modal()">New Category</button>
         </div>
       </div>
     </div>
@@ -30,7 +30,7 @@
             <td>{{category.description}}</td>
             <td>{% if category.is_active %}<span>Active</span>{% else %}<span>Inactive</span>{% endif %}</td>
             <td>
-              <button class="btn btn-success" onclick="edit('{% url 'category:update' category.id %}')"><i
+              <button class="btn btn-success btn-sm" onclick="edit('{% url 'category:update' category.id %}')"><i
                   class="fa-regular fa-pen-to-square"></i></button>
               <button class="btn btn-danger btn-sm" onclick="deleteData('{% url 'category:delete' category.id%}')"><i
                   class="fa-solid fa-trash"></i></button>

@@ -4,10 +4,14 @@ from core.subcategory.models import Subcategory
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .forms import ProductForm
 from django.urls import reverse_lazy
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse, Http404
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.admin.views.decorators import staff_member_required
+from django.utils.decorators import method_decorator
 
 
-class ProductListView(ListView):
+@method_decorator(staff_member_required, name='dispatch')
+class ProductListView(LoginRequiredMixin, ListView):
     model = Product
     context_object_name = 'products'
     template_name = 'product/list.html'
@@ -17,12 +21,6 @@ class ProductDetailView(DetailView):
     model = Product
     context_object_name = 'product'
     template_name = 'product/detail.html'
-
-    def get_object(self, queryset=None):
-        # Obtén el nombre del producto de la URL
-        product_name = self.kwargs.get('name')
-        # Busca el producto por su nombre
-        return Product.objects.get(name=product_name)
 
 
 class ProductCreateView(CreateView):
