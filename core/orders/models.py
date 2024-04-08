@@ -16,7 +16,7 @@ class Order(models.Model):
         db_table = 'order'
 
     def __str__(self):
-        return self.id
+        return self.order_token
 
 
 class OrderDetail(models.Model):

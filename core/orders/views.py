@@ -2,6 +2,8 @@ import requests
 import base64
 import json
 import uuid
+import os
+from django.conf import settings
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.urls import reverse, reverse_lazy
@@ -9,6 +11,9 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import Order, OrderDetail
 from core.product.models import Product
 from django.views.generic import ListView
+# PDF
+from fpdf import FPDF
+from django.template.loader import get_template
 
 
 class OrderListView(ListView):
@@ -242,28 +247,41 @@ def cancel_order(request):
     return HttpResponseRedirect(reverse_lazy('cart:index'))
 
 
-@csrf_exempt
-def consult_order(request):
+def consult_order(order_id):
     try:
-        access_token = get_access_token(request)
-        data = json.loads(request.body)
-        order_id = data.get('orderId')
-        headers = {
-            'Authorization': f'Bearer {access_token}',
-            'Content-Type': 'Application/json'
-        }
-
-        response = requests.get(
-            f'https://api-m.sandbox.paypal.com/v2/checkout/orders/{order_id}', headers=headers)
-
-        if response.status_code == 200:
-            return JsonResponse(response.json())
-        else:
-            return JsonResponse(response.json(), status=response.status_code)
+        order = Order.objects.get(id=order_id)
+        return order
     except Exception as e:
-        raise ValueError(str(e))
+        raise ValueError('Order not found')
 
 
-def test(request):
+def consult_order_detail(order):
+    try:
+        order_detail = OrderDetail.objects.filter(order=order)
+        return order_detail
+    except:
+        raise ValueError('Order detail not found')
 
-    return HttpResponse('ok')
+
+def view_order(request, id):
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial")
+    pdf.set_margins(10, 10, 5)
+    order = consult_order(id)
+    order_detail = consult_order_detail(order)
+    context = {
+        'order': order,
+        'details': order_detail
+    }
+    html_template = get_template("order/pdf_template.html")
+    html_content = html_template.render(context)
+    pdf.write_html(html_content)
+    pdf_file_path = "html.pdf"
+    pdf.output(pdf_file_path)
+    # Devolver una respuesta HTTP
+    with open(pdf_file_path, "rb") as pdf_file:
+        response = HttpResponse(
+            pdf_file.read(), content_type='application/pdf')
+        response['Content-Disposition'] = 'inline; filename="html.pdf"'
+        return response

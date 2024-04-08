@@ -28,7 +28,7 @@
               <td>{{order.total}}</td>
               <td>{% if order.status %}<span class="badge text-bg-success">Pagada</span> {% else %}<span class="badge text-bg-warning">Pendiente</span>{% endif %}</td>
               <td class="text-center">
-                <button class="btn btn-info btn-sm"><i class="fa-solid fa-eye"></i></button>
+                <a class="btn btn-info btn-sm" href="{% url 'order:pdf' order.id %}"><i class="fa-solid fa-eye"></i></a>
               </td>
             </tr>
             {% endfor %}
